@@ -11,3 +11,41 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.navRouteLink {
+  color: white;
+  text-decoration: none;
+
+  transition: color 750ms;
+}
+
+.navRouteLink:hover {
+  color: rgb(170, 207, 255);
+}
+
+.navLink {
+  color: rgb(36, 36, 36);
+
+  text-transform: uppercase;
+  font-family: sans-serif;
+  font-weight: 400;
+
+  font-size: 1.25rem;
+  border-left: 0.2rem solid #fff;
+  padding-left: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+
+  text-decoration: none;
+  transition: border 250ms;
+}
+
+.navLink:hover {
+  border-left: 0.2rem solid rgb(96, 138, 201);
+}
+
+.darkForm {
+  color: #fff !important;
+  background-color: rgb(33, 37, 41) !important;
+  border: 1px solid rgb(56, 62, 73) !important;
+}
