@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Form, FormControl, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { LoginWithEmail } from '../Services/FirebaseService';
+import { IsSignedIn, LoginWithEmail } from '../Services/FirebaseService';
 
 export default function LoginComponent(props) {
     const [ error, setError ] = useState();
 
     let navigate = useNavigate();
     useEffect(() => {
-        let token = sessionStorage.getItem('authToken');
-
-        if (token) {
+        if (IsSignedIn()) {
             navigate('/home');
         }
     }, []);

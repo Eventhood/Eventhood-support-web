@@ -1,8 +1,9 @@
 import { browserLocalPersistence, getAuth, setPersistence } from '@firebase/auth';
 import { initializeApp } from 'firebase/app';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { useState, useEffect, useContext, createContext } from 'react';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import env from 'react-dotenv';
 
 // Initialise the Firebase app object.
 export const firebaseApp = initializeApp({
@@ -12,7 +13,7 @@ export const firebaseApp = initializeApp({
     storageBucket: "theneighborhood-staff.appspot.com",
     messagingSenderId: "1044239785614",
     appId: "1:1044239785614:web:b36919729355331938b3df"
-  });
+});
 
 setPersistence(getAuth(), browserLocalPersistence).then(() => null).catch(err => {
     console.log(`There was a problem updating the app's authentication persistence.`);
@@ -32,6 +33,41 @@ export const Logout = () => {
     signOut(getAuth());
     sessionStorage.removeItem('authToken');
 };
+
+export const SendPasswordReset = () => {
+    sendPasswordResetEmail(getAuth(), getAuth().currentUser.email);
+}
+
+export const IsSignedIn = () => {
+    return getAuth().currentUser !== null;
+}
+
+export const GetAuthUser = () => {
+    return getAuth().currentUser;
+}
+
+export const GetCurrentUser = async () => {
+    let firebaseUser = getAuth().currentUser;
+
+    let userObj = null;
+
+    if (firebaseUser) {
+        userObj = {
+            firebaseUser: firebaseUser,
+            position: undefined
+        };
+
+        await fetch(`${env.STAFF_API_URL}api/staff/uuid/${firebaseUser.uid}`).then((data) => {
+            return data.json();
+        }).then((staffData) => {
+            userObj.position = staffData.data;
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+
+    return userObj;
+}
 
 // Storage Helper Functions
 export const UploadImage = async (image, directory) => {

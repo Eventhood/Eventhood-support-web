@@ -43,7 +43,9 @@
   },
   "react-dotenv": {
     "whitelist": [
-      "API_URL"
+      "API_URL",
+      "STAFF_API_URL",
+      "GOOGLE_APPLICATION_CREDENTIALS"
     ]
   }
 }

@@ -65,11 +65,14 @@ const dataTypes = [
         fields: [
             {
                 name: 'host',
-                type: 'text',
-                placeholder: 'User ObjectId',
-                label: 'Host Id',
+                type: 'select',
+                selectData: {
+                    property: 'users',
+                    text: 'accountHandle',
+                    value: '_id'
+                },
+                label: 'Host',
                 required: true,
-                subText: 'Must be a valid MongoDB ObjectId.'
             },
             {
                 name: 'name',
@@ -88,11 +91,14 @@ const dataTypes = [
             },
             {
                 name: 'category',
-                type: 'text',
-                placeholder: 'Event Category ObjectId',
+                type: 'select',
+                selectData: {
+                    property: 'eventCategories',
+                    text: 'name',
+                    value: '_id'
+                },
                 label: 'Event Category',
                 required: true,
-                subText: 'Must be a valid MongoDB ObjectId.'
             },
             {
                 name: 'maxParticipants',
@@ -101,7 +107,7 @@ const dataTypes = [
                 label: 'Maximum Participants',
                 required: false,
                 min: 0,
-                subText: 'Leave at zero if you want the event to have no maximum number of participants.'
+                subText: 'Leave blank or set to zero if you want the event to have no maximum number of participants.'
             },
             {
                 name: 'description',
@@ -118,8 +124,127 @@ const dataTypes = [
                 subText: 'This should reflect the starting time of the event, on the hosting date.'
             }
         ]
+    },
+    {
+        name: "Event Report",
+        id: "eventReport",
+        reqName: "reportData",
+        urlExtension: "api/eventreports",
+        fields: [
+            {
+                name: 'event',
+                type: 'select',
+                selectData: {
+                    property: 'events',
+                    text: 'name',
+                    value: '_id'
+                },
+                label: 'Event',
+                required: true
+            },
+            {
+                name: 'reportedBy',
+                type: 'select',
+                selectData: {
+                    property: 'users',
+                    text: 'accountHandle',
+                    value: '_id'
+                },
+                label: 'Reported By',
+                required: true
+            },
+            {
+                name: 'topic',
+                type: 'select',
+                selectData: {
+                    property: 'reportTopics',
+                    text: 'name',
+                    value: '_id'
+                },
+                label: 'Topic',
+                required: true
+            },
+            {
+                name: 'reason',
+                type: 'text',
+                placeholder: 'The reason for reporting this event.',
+                label: 'Reason',
+                required: true
+            }
+        ]
+    },
+    {
+        name: 'Event Registration',
+        id: 'eventRegistration',
+        reqName: "registrationData",
+        urlExtension: "api/eventregistrations",
+        fields: [
+            {
+                name: 'event',
+                type: 'select',
+                selectData: {
+                    property: 'events',
+                    value: '_id',
+                    text: 'name'
+                },
+                label: 'Event',
+                required: true
+            },
+            {
+                name: 'user',
+                type: 'select',
+                selectData: {
+                    property: 'users',
+                    value: '_id',
+                    text: 'accountHandle'
+                },
+                label: 'User',
+                required: true
+            }
+        ]
     }
 ];
+
+const apiRoutes = [
+    {
+        name: 'users',
+        route: 'api/users'
+    },
+    {
+        name: 'events',
+        route: 'api/events'
+    },
+    {
+        name: 'reportTopics',
+        route: 'api/reporttopics'
+    },
+    {
+        name: 'eventCategories',
+        route: 'api/eventcategories'
+    }
+];
+
+var loadedData = {};
+
+async function loadData() {
+
+    for (const dataRoute in apiRoutes) {
+        
+        await fetch(`${env.API_URL}${apiRoutes[dataRoute].route}`).then((result) => {
+            return result.json();
+        }).then((response) => {
+            if (response.data) {
+                loadedData[apiRoutes[dataRoute].name] = response.data;
+            } else {
+                loadedData[apiRoutes[dataRoute].name] = [];
+            }
+        }).catch((err) => {
+            alert(err);
+        });
+
+    }
+
+}
 
 async function handleUpload(file, directory) {
     return new Promise((resolve, reject) => {
@@ -141,6 +266,10 @@ export default function AddItemComponent() {
 
         if (!token) {
             navigate('/login');
+        } else {
+
+            loadData();
+
         }
     }, []);
 
@@ -189,17 +318,55 @@ export default function AddItemComponent() {
 
     let buildForm = (id) => {
         let type = dataTypes.filter(elem => elem.id === id)[0];
-        let form = <Card bg="dark" text="white">
+        let form = <Card bg="dark" text="white" className="mb-5">
             <Card.Header style={{textAlign: "start"}}>Adding New {type.name}</Card.Header>
             <Card.Body>
                 <Form onSubmit={(e) => handleSubmit(e, type.id)} style={{textAlign: "start"}}>
                     {
                         type.fields.map((field) => {
-                            return <Form.Group className="mb-3">
-                                <Form.Label className="fs-4">{field.label}</Form.Label>
-                                <FormControl className="darkForm" type={field.type} name={field.name} placeholder={field.placeholder} required={field.required}/>
-                                <Form.Text className="text-muted fs-6">{field.subText}</Form.Text>
-                            </Form.Group>;
+                            if (field.type !== 'select') {
+                                return <Form.Group className="mb-3">
+                                    <Form.Label className="fs-4 w-100">
+                                        <Container fluid style={{padding: '0px 16px'}}>
+                                            <Row>
+                                                <Col style={{padding: '0'}}>
+                                                    <span>{field.label}</span>
+                                                </Col>
+                                                <Col style={{padding: '0'}} className="text-end">
+                                                    { field.required ? <span className="text-danger font-monospace" style={{fontSize: '0.8rem'}}>Required</span> : <span className="text-muted font-monospace" style={{fontSize: '0.8rem'}}>Optional</span> }
+                                                </Col>
+                                            </Row>
+                                        </Container>
+                                    </Form.Label>
+                                    <FormControl className="darkForm" type={field.type} name={field.name} placeholder={field.placeholder} required={field.required}/>
+                                    <Form.Text className="text-muted fs-6">{field.subText}</Form.Text>
+                                </Form.Group>;
+                            } else {
+
+                                return <Form.Group className="mb-3">
+                                    <Form.Label className="fs-4 w-100">
+                                        <Container fluid style={{padding: '0px 16px'}}>
+                                            <Row>
+                                                <Col style={{padding: '0'}}>
+                                                    <span>{field.label}</span>
+                                                </Col>
+                                                <Col style={{padding: '0'}} className="text-end">
+                                                    { field.required ? <span className="text-danger font-monospace" style={{fontSize: '0.8rem'}}>Required</span> : null }
+                                                </Col>
+                                            </Row>
+                                        </Container>
+                                    </Form.Label>
+                                    <Form.Select className="darkForm" name={field.name} required={field.required}>
+                                        {
+                                            loadedData[field.selectData.property].map((dataRow) => {
+                                                return <option value={dataRow[field.selectData.value]}>{field.selectData.property === 'users' && field.selectData.text === 'accountHandle' ? '@' : null}{dataRow[field.selectData.text]}</option>
+                                            })
+                                        }
+                                    </Form.Select>
+                                    <Form.Text className="text-muted fs-6">{field.subText}</Form.Text>
+                                </Form.Group>
+
+                            }
                         })
                     }
 

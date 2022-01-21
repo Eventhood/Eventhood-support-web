@@ -7,6 +7,7 @@ import LoginComponent from './Components/LoginComponent';
 import HomeComponent from './Components/HomeComponent';
 import NavigationComponent from './Components/NavigationComponent';
 import AddItemComponent from './Components/AddItemComponent';
+import ManageStaffComponent from './Components/ManageStaffComponent';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
               <Route path="/login" element={<LoginComponent/>}/>
               <Route path="/home" element={<HomeComponent/>}/>
               <Route path="/add" element={<AddItemComponent/>}/>
+              <Route path="/managestaff" element={<ManageStaffComponent/>}/>
               <Route path="/" element={<Navigate replace to="/home"/>}/>
               <Route path='*' element={<NotFoundComponent/>}/>
             </Routes>
