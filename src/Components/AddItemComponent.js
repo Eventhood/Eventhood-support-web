@@ -202,7 +202,70 @@ const dataTypes = [
                 required: true
             }
         ]
-    }
+    },
+    {
+        name: 'FAQ Topic',
+        id: 'faqTopic',
+        reqName: 'faqTopicData',
+        urlExtension: 'api/FAQTopics',
+        fields: [
+            {
+                name: 'name',
+                type: 'text',
+                label: 'Topic Name',
+                placeholder: 'The name of the FAQ topic.',
+                required: true
+            }
+        ]
+    },
+    {
+        name: 'FAQ Question',
+        id: 'faqQuestion',
+        reqName: 'faqQuestionData',
+        urlExtension: 'api/FAQQuestions',
+        fields: [
+            {
+                name: 'topic',
+                type: 'select',
+                label: 'Question Topic',
+                selectData: {
+                    property: 'faqTopics',
+                    text: 'name',
+                    value: '_id'
+                },
+                required: true
+            },
+            {
+                name: 'question',
+                type: 'text',
+                label: 'Question',
+                placeholder: 'The question text to be displayed.',
+                required: true
+            },
+            {
+                name: 'answer',
+                type: 'text',
+                label: 'Answer',
+                placeholder: 'The answer to the question.',
+                required: true
+            }
+        ]
+    }/*,
+    {
+        name: '',
+        id: '',
+        reqName: '',
+        urlExtension: '',
+        fields: [
+            {
+                name: '',
+                type: '',
+                label: '',
+                placeholder: '',
+                required: true
+            }
+        ]
+    }*/
 ];
 
 const apiRoutes = [
@@ -221,6 +284,10 @@ const apiRoutes = [
     {
         name: 'eventCategories',
         route: 'api/eventcategories'
+    },
+    {
+        name: 'faqTopics',
+        route: 'api/FAQTopics'
     }
 ];
 
