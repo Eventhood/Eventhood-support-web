@@ -6,6 +6,49 @@ import env from 'react-dotenv';
 
 const dataTypes = [
     {
+        name: 'User',
+        id: 'user',
+        urlExtension: 'api/users',
+        reqName: 'userData',
+        fields: [
+            {
+                name: 'uuid',
+                type: 'text',
+                placeholder: 'Firebase UUID',
+                label: 'Firebase UUID',
+                required: true
+            },
+            {
+                name: 'displayName',
+                type: 'text',
+                placeholder: 'Account Display Name',
+                label: 'Display Name',
+                required: true
+            },
+            {
+                name: 'accountHandle',
+                type: 'text',
+                placeholder: '@AccountHandle',
+                label: 'Account Handle',
+                required: true
+            },
+            {
+                name: 'photoURL',
+                type: 'text',
+                placeholder: 'Profile Picture URL',
+                label: 'Profile Picture',
+                required: true
+            },
+            {
+                name: 'email',
+                type: 'email',
+                placeholder: 'name@domain.com',
+                label: 'Email',
+                required: true
+            }
+        ]
+    },
+    {
         name: "Event Category",
         id: "eventCategory",
         urlExtension: "api/eventcategories",
