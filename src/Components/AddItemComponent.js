@@ -45,6 +45,12 @@ const dataTypes = [
                 placeholder: 'name@domain.com',
                 label: 'Email',
                 required: true
+            },
+            {
+                name: 'creationTime',
+                type: 'date',
+                label: 'Creation Time',
+                required: true
             }
         ]
     },
